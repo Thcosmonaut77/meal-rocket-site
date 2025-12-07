@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Meal Rocket – Events & Catering Services</title>
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="stylesheet" href="tooplate-bistro-elegance.css" />
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#home" class="logo" aria-label="Meal Rocket - Home">
+        <!-- SVG logo -->
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+          <circle cx="20" cy="20" r="18" stroke="#D7263D" stroke-width="2" fill="none"/>
+          <path d="M20 8 L24 20 L20 32 L16 20 Z" fill="#D7263D" opacity="0.9"/>
+          <circle cx="20" cy="18" r="3" fill="white"/>
+          <path d="M18 32 Q20 36 22 32" fill="#FFB400"/>
+        </svg>
+        <span>Meal Rocket</span>
+      </a>
+
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#home" class="active">Home</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#menu">Catering Menu</a></li>
+        <li><a href="#booking">Event Booking</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+
+      <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <main>
+    <section id="home" class="hero">
+      <div class="diagonal-grid" aria-hidden="true"></div>
+      <div class="static-decoration" aria-hidden="true"></div>
+      <div class="bottom-right-decoration" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <h1>Meal Rocket Events & Catering</h1>
+        <p>
+          <span class="text-option">Exceptional catering for weddings, corporate events & celebrations</span>
+          <span class="text-option">Premium dishes crafted with passion and delivered with excellence</span>
+          <span class="text-option">Your event deserves unforgettable flavor and flawless service</span>
+        </p>
+        <a href="#booking" class="cta-btn">Book Your Event</a>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" style="padding: 60px 20px; text-align: center;">
+      <h2>What We Offer</h2>
+      <div class="menu-grid">
+        <div class="menu-item">
+          <img src="https://images.unsplash.com/photo-1534938665420-4193effeaccf?w=500&h=260&fit=crop"
+               class="menu-item-image" alt="Wedding Catering">
+          <div class="menu-item-content">
+            <h3>Wedding Catering</h3>
+            <p>Elegant & customized menus designed to elevate your special day.</p>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=500&h=260&fit=crop"
+               class="menu-item-image" alt="Corporate Events">
+          <div class="menu-item-content">
+            <h3>Corporate Events</h3>
+            <p>Professional service for conferences, AGMs, trainings, and office functions.</p>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?w=500&h=260&fit=crop"
+               class="menu-item-image" alt="Private Parties">
+          <div class="menu-item-content">
+            <h3>Private Parties</h3>
+            <p>Birthdays, anniversaries, family gatherings—beautifully catered.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catering Menu Section -->
+    <section id="menu">
+      <h2>Our Catering Menu Highlights</h2>
+
+      <div class="menu-grid">
+        <div class="menu-item">
+          <img src="https://images.unsplash.com/photo-1473093226795-af9932fe5856?w=400&h=200&fit=crop"
+               alt="Jollof Rice Special" class="menu-item-image">
+          <div class="menu-item-content">
+            <h3>Party Jollof Deluxe</h3>
+            <p>Smoky Nigerian jollof served with grilled chicken & plantain.</p>
+            <div class="price">$12 / plate</div>
+            <!-- use data-dish for progressive enhancement -->
+            <button class="ingredients-btn" data-dish="jollof-deluxe" type="button">View Ingredients</button>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=200&fit=crop"
+               alt="Grilled Chicken" class="menu-item-image">
+          <div class="menu-item-content">
+            <h3>Grilled Chicken Platter</h3>
+            <p>Marinated chicken served with pepper sauce & sides.</p>
+            <div class="price">$15 / plate</div>
+            <button class="ingredients-btn" data-dish="grilled-chicken" type="button">View Ingredients</button>
+          </div>
+        </div>
+
+        <div class="menu-item">
+          <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=400&h=200&fit=crop"
+               alt="Finger Foods" class="menu-item-image">
+          <div class="menu-item-content">
+            <h3>Premium Finger Foods</h3>
+            <p>Spring rolls, samosa, mini burgers, chicken skewers, and more.</p>
+            <div class="price">$10 / guest</div>
+            <button class="ingredients-btn" data-dish="finger-foods" type="button">View Ingredients</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Event Booking Section -->
+    <section id="booking">
+      <div class="reservation">
+        <div class="reservation-left">
+          <h2>Book Meal Rocket for Your Event</h2>
+
+          <!-- removed inline onsubmit; modern JS attaches listener -->
+          <form class="reservation-form">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required />
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone</label>
+              <input type="tel" id="phone" name="phone" required />
+            </div>
+
+            <div class="form-group">
+              <label for="date">Event Date</label>
+              <input type="date" id="date" name="date" required />
+            </div>
+
+            <div class="form-group">
+              <label for="guests">Expected Guests</label>
+              <select id="guests" name="guests" required>
+                <option value="">Select</option>
+                <option value="20">Up to 20</option>
+                <option value="50">Up to 50</option>
+                <option value="100">Up to 100</option>
+                <option value="200">Up to 200</option>
+                <option value="500">500+</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <label for="special">Event Details / Requests</label>
+              <textarea id="special" name="special" rows="5" placeholder="Wedding, corporate event, birthday..."></textarea>
+            </div>
+
+            <button class="submit-btn" type="submit">Submit Booking Request</button>
+          </form>
+        </div>
+
+        <div class="reservation-right">
+          <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=600&fit=crop"
+               class="reservation-image" alt="Event Catering" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Contact Us</h3>
+          <p>
+            Meal Rocket Catering Services<br />
+            45 Galaxy Road, Ikeja, Lagos<br />
+            Phone: +234 810 000 1234<br />
+            Email: support@mealrocket.com
+          </p>
+          <!-- WhatsApp floating button (JS will fill href) -->
+            <a class="wa-float" title="Chat on WhatsApp" aria-label="WhatsApp chat">💬</a>
+
+            <script src="tooplate-bistro-scripts.js"></script>
+        </div>
+
+        <div class="footer-section">
+          <h3>Office Hours</h3>
+          <p>
+            Monday – Friday: 9AM – 7PM<br />
+            Saturday: 10AM – 5PM<br />
+            Sunday: Closed
+          </p>
+        </div>
+
+        <div class="footer-section">
+          <h3>Follow Us</h3>
+          <p>
+            <a href="#">Facebook</a><br />
+            <a href="#">Instagram</a><br />
+            <a href="#">Twitter</a><br />
+            <a href="#">LinkedIn</a>
+          </p>
+        
+        </div>
+      </div>
+
+      <div style="margin-top: 2rem; text-align: center; padding-top: 2rem; border-top: 1px solid #555;">
+        <p>&copy; 2026 Meal Rocket - Events & Catering Services</p>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Ingredients Modal (no inline handlers) -->
+  <div id="ingredientsModal" class="modal" aria-hidden="true">
+    <div class="modal-content">
+      <button class="close" aria-label="Close dialog">&times;</button>
+      <h3 id="modalTitle">Dish Ingredients</h3>
+      <ul id="ingredientsList" class="ingredient-list"></ul>
+    </div>
+  </div>
+
+  
+</body>
+</html>
