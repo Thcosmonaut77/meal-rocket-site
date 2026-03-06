@@ -1,0 +1,130 @@
+name: MealRocket Deploy Pipeline
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Terraform action"
+        required: true
+        default: apply
+        type: choice
+        options:
+          - apply
+          - destroy
+      confirm_destroy:
+        description: "Type DESTROY to confirm"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      TF_DIR: infrastructure
+      SITE_DIR: site
+      BUILD_DIR: build
+      WHATSAPP_NUMBER: "+2349036372556"
+
+    steps:
+
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Detect infrastructure changes
+      id: changes
+      run: |
+        if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^infrastructure/'; then
+          echo "infra_changed=true" >> $GITHUB_OUTPUT
+        else
+          echo "infra_changed=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      if: steps.changes.outputs.infra_changed == 'true'
+      working-directory: ${{ env.TF_DIR }}
+      run: terraform init
+
+    - name: Terraform Validate
+      if: steps.changes.outputs.infra_changed == 'true'
+      working-directory: ${{ env.TF_DIR }}
+      run: terraform validate
+      
+    - name: Terraform Plan
+      if: steps.changes.outputs.infra_changed == 'true'
+      id: plan
+      working-directory: ${{ env.TF_DIR }}
+      run: |
+        terraform plan -detailed-exitcode -out=tfplan || exitcode=$?
+    
+        if [ "$exitcode" = "2" ]; then
+          echo "changes=true" >> $GITHUB_OUTPUT
+        else
+          echo "changes=false" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Terraform Apply
+      if: ${{ steps.changes.outputs.infra_changed == 'true' && steps.plan.outputs.changes == 'true' }}
+      working-directory: ${{ env.TF_DIR }}
+      run: terraform apply -auto-approve tfplan
+
+    - name: Export Terraform Outputs
+      if: ${{ steps.plan.outputs.changes == 'true' }}
+      working-directory: ${{ env.TF_DIR }}
+      run: |
+        echo "API_ENDPOINT=$(terraform output -raw api_endpoint)" >> $GITHUB_ENV
+        echo "SITE_BUCKET=$(terraform output -raw site_bucket_name)" >> $GITHUB_ENV
+        echo "CF_DIST_ID=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_ENV
+
+    - name: Prepare build directory
+      if: ${{ github.event.inputs.action != 'destroy' }}
+      run: |
+        rm -rf $BUILD_DIR
+        mkdir -p $BUILD_DIR
+        cp -r $SITE_DIR/* $BUILD_DIR/
+
+    - name: Inject API endpoint & WhatsApp number
+      if: ${{ github.event.inputs.action != 'destroy' }}
+      run: |
+        JS_FILE="$BUILD_DIR/meal-rocket.js"
+
+        if [ -f "$JS_FILE" ]; then
+          sed -i "s|__API_ENDPOINT__|${API_ENDPOINT}|g" "$JS_FILE"
+          sed -i "s|__WHATSAPP__|${WHATSAPP_NUMBER}|g" "$JS_FILE"
+        else
+          echo "JavaScript file not found"
+          exit 1
+        fi
+
+    - name: Deploy site to S3
+      if: ${{ github.event.inputs.action != 'destroy' }}
+      run: |
+        aws s3 sync $BUILD_DIR s3://$SITE_BUCKET \
+          --delete \
+          --acl bucket-owner-full-control
+
+    - name: CloudFront cache invalidation
+      if: ${{ github.event.inputs.action != 'destroy' }}
+      run: |
+        aws cloudfront create-invalidation \
+          --distribution-id $CF_DIST_ID \
+          --paths "/*"
+
+    - name: Terraform Destroy
+      if: ${{ github.event.inputs.action == 'destroy' && github.event.inputs.confirm_destroy == 'DESTROY' }}
+      working-directory: ${{ env.TF_DIR }}
+      run: terraform destroy -auto-approve

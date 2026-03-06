@@ -1,0 +1,76 @@
+name: Terraform Apply (Infrastructure Deploy)
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Choose Terraform action"
+        required: true
+        default: apply
+        type: choice
+        options:
+          - apply
+          - destroy
+      confirm_destroy:
+        description: "Type 'DESTROY' to confirm"
+        required: false  
+
+jobs:
+  terraform:
+    name: Deploy Infrastructure
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    env:
+      TF_DIR: infrastructure
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3 
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Terraform Init
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform init -input=false
+
+      - name: Terraform Format
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform validate
+
+      - name: Terraform Plan
+        if: github.event.inputs.action == 'apply'  
+        id: plan
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform plan -out=tfplan
+
+      - name: Upload Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan
+          path: ${{ env.TF_DIR }}/tfplan
+
+      - name: Apply Terraform (only if approved)
+        if: github.event.inputs.action == 'apply'
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform apply -auto-approve tfplan
+
+      - name: Terraform Destroy
+        if: github.event.inputs.action == 'destroy' && github.event.inputs.confirm_destroy == 'DESTROY'
+        working-directory: ${{ env.TF_DIR }}
+        run: terraform destroy -auto-approve
