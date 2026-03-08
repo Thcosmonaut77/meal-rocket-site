@@ -27,6 +27,8 @@ jobs:
     env:
       TF_DIR: infrastructure
       SITE_DIR: site
+      BUCKET_DIR: remote-state
+      TF_STATE_BUCKET: meal-rocket-tfstate
       BUILD_DIR: build
       WHATSAPP_NUMBER: "+2349036372556"
 
@@ -35,6 +37,17 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }} 
+     
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+    
+        
     - name: Detect infrastructure changes
       id: changes
       run: |
@@ -44,15 +57,24 @@ jobs:
           echo "infra_changed=false" >> $GITHUB_OUTPUT
         fi
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v3
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+  
+    
+########################################
+#              REMOTE STATE            #
+########################################                        
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v3
+    - name: Bootstrap Terraform state
+      working-directory: remote-state
+      run: |
+        if aws s3api head-bucket --bucket $TF_STATE_BUCKET 2>/dev/null; then
+          echo "State bucket exists"
+        else
+          terraform init
+          terraform apply -auto-approve
+        fi
+#########################################
+#              INFRASTRUCTURE           #
+#########################################
 
     - name: Terraform Init
       if: steps.changes.outputs.infra_changed == 'true'

@@ -1,8 +1,0 @@
-region = "us-east-1"
-profile = "default"
-project = "meal-rocket"
-domain_name = "trippyuniverse.click"
-subdomain = "www"
-hosted_zone_id = "trippyuniverse.click"
-lambda_zip_path = "./lambda/lambda_function_payload.zip"
-bookings_table_name = "MealRocketBookings"
