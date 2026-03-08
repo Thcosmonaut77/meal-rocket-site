@@ -63,9 +63,10 @@ jobs:
 #              REMOTE STATE            #
 ########################################                        
 
-    - name: Terraform Apply (remote-state)
+    - name: Terraform Init (remote-state)
       working-directory: ${{ env.BUCKET_DIR }} 
-      run: terraform apply --auto-approve   
+      run: terraform init      
+   
 
 #    - name: Bootstrap Terraform state
 #      working-directory: remote-state
