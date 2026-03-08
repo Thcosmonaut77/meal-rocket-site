@@ -79,6 +79,15 @@ jobs:
 #              INFRASTRUCTURE           #
 #########################################
 
+
+    - name: Export Terraform Outputs
+      working-directory: ${{ env.TF_DIR }}
+      run: |
+        echo "API_ENDPOINT=$(terraform output -raw api_endpoint)" >> $GITHUB_ENV
+        echo "SITE_BUCKET=$(terraform output -raw site_bucket_name)" >> $GITHUB_ENV
+        echo "CF_DIST_ID=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_ENV
+
+
     - name: Terraform Init
       if: steps.changes.outputs.infra_changed == 'true'
       working-directory: ${{ env.TF_DIR }}
@@ -107,13 +116,7 @@ jobs:
       working-directory: ${{ env.TF_DIR }}
       run: terraform apply -auto-approve tfplan
 
-    - name: Export Terraform Outputs
-      if: ${{ steps.plan.outputs.changes == 'true' }}
-      working-directory: ${{ env.TF_DIR }}
-      run: |
-        echo "API_ENDPOINT=$(terraform output -raw api_endpoint)" >> $GITHUB_ENV
-        echo "SITE_BUCKET=$(terraform output -raw site_bucket_name)" >> $GITHUB_ENV
-        echo "CF_DIST_ID=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_ENV
+   
 
     - name: Prepare build directory
       if: ${{ github.event.inputs.action != 'destroy' }}
