@@ -69,9 +69,12 @@ jobs:
         if aws s3api head-bucket --bucket $TF_STATE_BUCKET 2>/dev/null; then
           echo "State bucket exists"
         else
-          terraform init && terraform apply -auto-approve
-          
+          terraform init
         fi
+
+    - name: Terraform Apply (remote-state)
+      working-directory: ${{ env.BUCKET_DIR }} 
+      run: terraform apply --auto-approve   
 #########################################
 #              INFRASTRUCTURE           #
 #########################################
