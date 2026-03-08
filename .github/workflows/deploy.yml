@@ -92,17 +92,14 @@ jobs:
 
 
     - name: Terraform Init
-      if: steps.changes.outputs.infra_changed == 'true'
       working-directory: ${{ env.TF_DIR }}
       run: terraform init
 
     - name: Terraform Validate
-      if: steps.changes.outputs.infra_changed == 'true'
       working-directory: ${{ env.TF_DIR }}
       run: terraform validate
       
     - name: Terraform Plan
-      if: steps.changes.outputs.infra_changed == 'true'
       id: plan
       working-directory: ${{ env.TF_DIR }}
       run: |
@@ -115,7 +112,6 @@ jobs:
         fi
 
     - name: Terraform Apply
-      if: ${{ steps.changes.outputs.infra_changed == 'true' && steps.plan.outputs.changes == 'true' }}
       working-directory: ${{ env.TF_DIR }}
       run: terraform apply -auto-approve tfplan
 
