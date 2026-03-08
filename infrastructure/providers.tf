@@ -1,6 +1,6 @@
 provider "aws" {
   region  = var.region
-  profile = var.profile
+#  profile = var.profile
   alias = "use1"
 }
 
@@ -12,6 +12,6 @@ terraform {
     dynamodb_table = "meal-rocket-tfstate"
     key = "LockID"
     region = var.region
-    profile = var.profile  
+#    profile = var.profile  
   }
 }
