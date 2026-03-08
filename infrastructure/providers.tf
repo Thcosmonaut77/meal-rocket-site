@@ -1,5 +1,5 @@
 provider "aws" {
-  region  = var.region
+  #region  = var.region
 #  profile = var.profile
   alias = "use1"
 }
@@ -11,7 +11,7 @@ terraform {
     bucket = "meal-rocket-tfstate"
     dynamodb_table = "meal-rocket-tfstate"
     key = "LockID"
-    region = var.region
+#    region = var.region
 #    profile = var.profile  
   }
 }

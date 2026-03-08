@@ -9,10 +9,10 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = var.region
+#provider "aws" {
+  #region = var.region
 #  profile = var.profile                Commented out because actions authenticates with aws-cred. no profile required
-}
+#}
 
 resource "aws_s3_bucket" "terraform_state" {
     bucket = "meal-rocket-tfstate"
