@@ -141,10 +141,15 @@ jobs:
           exit 1
         fi
 
+    - name: Debug variables
+      run: |
+        echo "SITE_BUCKET=$SITE_BUCKET"
+        echo "BUILD_DIR=$BUILD_DIR"
+
     - name: Deploy site to S3
       if: ${{ github.event.inputs.action != 'destroy' }}
       run: |
-        aws s3 sync $BUILD_DIR s3://$SITE_BUCKET \
+        aws s3 sync "$BUILD_DIR" "s3://$SITE_BUCKET" \
           --delete \
           --acl bucket-owner-full-control
 
@@ -158,4 +163,4 @@ jobs:
     - name: Terraform Destroy
       if: ${{ github.event.inputs.action == 'destroy' && github.event.inputs.confirm_destroy == 'DESTROY' }}
       working-directory: ${{ env.TF_DIR }}
-      run: terraform destroy -auto-approve
+      run: terraform destroy --auto-approve
