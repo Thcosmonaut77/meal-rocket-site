@@ -105,11 +105,6 @@ jobs:
       run: |
         terraform plan -detailed-exitcode -out=tfplan || exitcode=$?
     
-        if [ "$exitcode" = "2" ]; then
-          echo "changes=true" >> $GITHUB_OUTPUT
-        else
-          echo "changes=false" >> $GITHUB_OUTPUT
-        fi
 
     - name: Terraform Apply
       working-directory: ${{ env.TF_DIR }}
