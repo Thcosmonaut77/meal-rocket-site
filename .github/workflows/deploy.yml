@@ -72,11 +72,12 @@ jobs:
           echo "State bucket exists"
         else
           terraform init
+          terraform apply --auto-approve
         fi
 
-    - name: Terraform Apply (remote-state)
-      working-directory: ${{ env.BUCKET_DIR }} 
-      run: terraform apply --auto-approve   
+#    - name: Terraform Apply (remote-state)
+#      working-directory: ${{ env.BUCKET_DIR }} 
+#      run: terraform apply --auto-approve   
 #########################################
 #              INFRASTRUCTURE           #
 #########################################
