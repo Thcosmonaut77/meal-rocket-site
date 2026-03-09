@@ -65,30 +65,17 @@ jobs:
 
        
 
-    - name: Bootstrap Terraform state
-      working-directory: remote-state
-      run: |
-        if aws s3api head-bucket --bucket $TF_STATE_BUCKET 2>/dev/null; then
-          echo "State bucket exists"
-        else
-          terraform init
-          terraform apply --auto-approve
-        fi
-
-#    - name: Terraform Apply (remote-state)
-#      working-directory: ${{ env.BUCKET_DIR }} 
-#      run: terraform apply --auto-approve   
+    - name: Terraform Init (remote state)
+      working-directory: ${{ env.BUCKET_DIR }}
+      run: terraform init
+        
+    - name: Terraform Apply (remote-state)
+      working-directory: ${{ env.BUCKET_DIR }} 
+      run: terraform apply --auto-approve   
 #########################################
 #              INFRASTRUCTURE           #
 #########################################
 
-
-    - name: Export Terraform Outputs
-      working-directory: ${{ env.TF_DIR }}
-      run: |
-        echo "API_ENDPOINT=$(terraform output -raw api_endpoint)" >> $GITHUB_ENV
-        echo "SITE_BUCKET=$(terraform output -raw site_bucket_name)" >> $GITHUB_ENV
-        echo "CF_DIST_ID=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_ENV
 
 
     - name: Terraform Init
@@ -108,7 +95,16 @@ jobs:
 
     - name: Terraform Apply
       working-directory: ${{ env.TF_DIR }}
-      run: terraform apply -auto-approve tfplan
+      run: terraform apply --auto-approve tfplan
+
+
+    - name: Export Terraform Outputs
+      working-directory: ${{ env.TF_DIR }}
+      run: |
+        echo "API_ENDPOINT=$(terraform output -raw api_endpoint)" >> $GITHUB_ENV
+        echo "SITE_BUCKET=$(terraform output -raw site_bucket_name)" >> $GITHUB_ENV
+        echo "CF_DIST_ID=$(terraform output -raw cloudfront_distribution_id)" >> $GITHUB_ENV
+
 
 
     - name: Prepare build directory
