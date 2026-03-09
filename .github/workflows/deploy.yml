@@ -65,12 +65,7 @@ jobs:
 
        
 
-    - name: Terraform Init (remote state)
-      working-directory: ${{ env.BUCKET_DIR }}
-      run: terraform init
-        
-    - name: Terraform Apply (remote-state)
-      working-directory: ${{ env.BUCKET_DIR }} 
+   
       run: terraform apply --auto-approve   
 #########################################
 #              INFRASTRUCTURE           #
