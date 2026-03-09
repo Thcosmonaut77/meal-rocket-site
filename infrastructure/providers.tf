@@ -13,6 +13,6 @@ terraform {
     key = "LockID"
     encrypt = true
     region = "us-east-1"
-    profile = "default" 
+    #profile = "default" 
   }
 }
