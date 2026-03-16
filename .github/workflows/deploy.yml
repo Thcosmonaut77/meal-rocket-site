@@ -84,7 +84,7 @@ jobs:
       id: plan
       working-directory: ${{ env.TF_DIR }}
       run: |
-        terraform plan - input=false -detailed-exitcode -out=tfplan || exitcode=$?
+        terraform plan - input=false -detailed-exitcode -out=tfplan
       env:
         TF_VAR_bookings_table_name: ${{ secrets.BOOKINGS_TABLE_NAME}}
         TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME}}
