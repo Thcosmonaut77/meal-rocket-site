@@ -9,10 +9,10 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "meal-rocket-tfstate"
-    use_lockfile = true  
     key = "LockID"
     encrypt = true
     region = "us-east-1"
+    dynamodb_table = "meal-rocket-tfstate"
     #profile = "default" 
   }
 }
